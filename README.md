@@ -1,9 +1,14 @@
 # Web Translator
 
-A web translator app using IBM Language Translator API.
+A web translator app using MS Azure AI Translator API.
+
+## Next features
+- [ ] Input with text to speech
+- [ ] Output with speech to text
+- [ ] Language selector
 
 ## Screenshots
-![screenshot](doc/screenshot.png)
+![screenshot](doc/screenshot.gif)
 
 > 🎨 UI inspired on IBM.
 
@@ -12,7 +17,8 @@ A web translator app using IBM Language Translator API.
 - Typescript
 - Axios
 - [Tailwindcss](https://tailwindcss.com/)
-- [IBM Language Translator](https://cloud.ibm.com/catalog/services/language-translator?catalog_query=aHR0cHM6Ly9jbG91ZC5pYm0uY29tL2NhdGFsb2c%2FY2F0ZWdvcnk9YWk%3D#about)
+- [Azure AI Translator](https://azure.microsoft.com/en-us/products/ai-services/ai-translator/#layout-container-uidb8e1)
+- [Google Fonts](https://fonts.google.com/)
 
 ## License
 GNU GPLv3 by Wolney Oliveira

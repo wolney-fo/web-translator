@@ -3,9 +3,10 @@
 A web translator app using MS Azure AI services.
 
 ## Next features
-- [x] Output with speech to text
-- [ ] Input with text to speech
+- [x] Output with text to speech
+- [ ] Input with speech to text
 - [ ] Language selector
+- [x] Language swap
 
 ## Screenshots
 ![screenshot](doc/screenshot.gif)

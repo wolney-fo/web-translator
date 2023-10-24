@@ -12,12 +12,13 @@ const { v4: uuidv4 } = require("uuid");
 import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 
 import { ibm_plex_sans } from "@/fonts";
-import { AiFillSound, AiFillStar } from "react-icons/ai";
+import { AiFillSound } from "react-icons/ai";
+import { HiOutlineSwitchVertical } from "react-icons/hi";
 
-const translateFrom = "English";
-const translateTo = "Portuguese";
 
 export default function Home() {
+  const [translateFrom, setTranslateFrom] = useState<string>("English");
+  const [translateTo, setTranslateTo] = useState<string>("Portuguese");
   const [inputText, setInputText] = useState<string>("");
   const [outputText, setOutputText] = useState<string>("");
 
@@ -84,6 +85,11 @@ export default function Home() {
     }
   };
 
+  const swapLanguage = () => {
+    setTranslateFrom(translateTo);
+    setTranslateTo(translateFrom);
+  }
+
   return (
     <main className={`py-8 text-center text-white ${ibm_plex_sans.className}`}>
       <a
@@ -94,7 +100,7 @@ export default function Home() {
         ⭐ Considere star
       </a>
 
-      <section className="py-8 mx-auto w-[min(50rem,70%)]">
+      <section className="flex flex-col center py-8 mx-auto w-[min(50rem,70%)]">
         <div className="py-8">
           <h3 className="text-2xl mb-8">From {translateFrom}</h3>
           <textarea
@@ -109,10 +115,14 @@ export default function Home() {
         </div>
 
         <button
-          className="py-2 w-full max-w-[24rem] bg-[#0f62fe] hover:bg-[#0353e9]"
+          className="mx-auto py-2 w-full max-w-[24rem] bg-[#0f62fe] hover:bg-[#0353e9]"
           onClick={translateText}
         >
           Translate
+        </button>
+
+        <button className="my-8 mx-auto p-4 bg-[#262626] hover:bg-[#353535]" onClick={swapLanguage}>
+          <HiOutlineSwitchVertical />
         </button>
 
         <div className="py-8">
@@ -129,7 +139,7 @@ export default function Home() {
         </div>
 
         <button
-          className="text-center py-2 px-4 bg-[#0f62fe] hover:bg-[#0353e9]"
+          className="text-center mx-auto py-2 px-4 bg-[#0f62fe] hover:bg-[#0353e9]"
           onClick={playTranslation}
         >
           <AiFillSound />

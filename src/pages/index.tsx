@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   AZURE_AI_TRANSLATOR_API_ENDPOINT,
@@ -14,13 +14,22 @@ import * as sdk from "microsoft-cognitiveservices-speech-sdk";
 import { ibm_plex_sans } from "@/fonts";
 import { AiFillSound } from "react-icons/ai";
 import { HiOutlineSwitchVertical } from "react-icons/hi";
-
+import { Language } from "@/config/interfaces";
 
 export default function Home() {
-  const [translateFrom, setTranslateFrom] = useState<string>("English");
-  const [translateTo, setTranslateTo] = useState<string>("Portuguese");
+  const [translateFrom, setTranslateFrom] = useState<Language | null>(null);
+  const [translateTo, setTranslateTo] = useState<Language | null>(null);
   const [inputText, setInputText] = useState<string>("");
   const [outputText, setOutputText] = useState<string>("");
+
+  useEffect(() => {
+    fetch("/languages.json")
+      .then((response) => response.json())
+      .then((data) => {
+        setTranslateFrom(data.languages[0]);
+        setTranslateTo(data.languages[1]);
+      });
+  }, []);
 
   const translateText = async () => {
     setOutputText("Translating...");
@@ -36,8 +45,8 @@ export default function Home() {
       },
       params: {
         "api-version": "3.0",
-        from: "en",
-        to: ["pt"],
+        from: translateFrom?.code.substring(0, 2),
+        to: [translateTo?.code.substring(0, 2)],
       },
       data: [
         {
@@ -67,7 +76,7 @@ export default function Home() {
         undefined
       );
 
-      const ssml = `<speak version='1.0' xmlns="https://www.w3.org/2001/10/synthesis" xml:lang='pt-BR'><voice name="${AZURE_TEXT_TO_SPEECH_API_SYNTHESIS_VOICE_NAME}">${outputText}</voice></speak>`;
+      const ssml = `<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xml:lang="en-US"><voice name="${AZURE_TEXT_TO_SPEECH_API_SYNTHESIS_VOICE_NAME}"><lang xml:lang="${translateTo?.code}">${outputText}</lang></voice></speak>`;
       speechSynthesizer.speakSsmlAsync(
         ssml,
         (result) => {
@@ -88,7 +97,9 @@ export default function Home() {
   const swapLanguage = () => {
     setTranslateFrom(translateTo);
     setTranslateTo(translateFrom);
-  }
+    setInputText("");
+    setOutputText("");
+  };
 
   return (
     <main className={`py-8 text-center text-white ${ibm_plex_sans.className}`}>
@@ -102,7 +113,7 @@ export default function Home() {
 
       <section className="flex flex-col center py-8 mx-auto w-[min(50rem,70%)]">
         <div className="py-8">
-          <h3 className="text-2xl mb-8">From {translateFrom}</h3>
+          <h3 className="text-2xl mb-8">From {translateFrom?.language}</h3>
           <textarea
             name="translateFrom"
             id="translateFrom"
@@ -121,12 +132,15 @@ export default function Home() {
           Translate
         </button>
 
-        <button className="my-8 mx-auto p-4 bg-[#262626] hover:bg-[#353535]" onClick={swapLanguage}>
+        <button
+          className="my-8 mx-auto p-4 bg-[#262626] hover:bg-[#353535]"
+          onClick={swapLanguage}
+        >
           <HiOutlineSwitchVertical />
         </button>
 
         <div className="py-8">
-          <h3 className="text-2xl mb-8">To {translateTo}</h3>
+          <h3 className="text-2xl mb-8">To {translateTo?.language}</h3>
           <textarea
             name="translateFrom"
             id="translateFrom"

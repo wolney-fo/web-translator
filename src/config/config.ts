@@ -11,4 +11,4 @@ export const AZURE_RESOURCES_API_REGION =
   process.env.NEXT_PUBLIC_AZURE_RESOURCES_API_REGION;
 
 export const AZURE_TEXT_TO_SPEECH_API_SYNTHESIS_VOICE_NAME =
-  "pt-BR-GiovannaNeural";
+  "en-US-JennyMultilingualNeural";

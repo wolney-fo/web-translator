@@ -17,6 +17,7 @@ import { HiOutlineSwitchVertical } from "react-icons/hi";
 import { Language } from "@/config/interfaces";
 
 export default function Home() {
+  const [languages, setLanguages] = useState<Language[]>([]);
   const [translateFrom, setTranslateFrom] = useState<Language | null>(null);
   const [translateTo, setTranslateTo] = useState<Language | null>(null);
   const [inputText, setInputText] = useState<string>("");
@@ -26,6 +27,7 @@ export default function Home() {
     fetch("/languages.json")
       .then((response) => response.json())
       .then((data) => {
+        setLanguages(data.languages);
         setTranslateFrom(data.languages[0]);
         setTranslateTo(data.languages[1]);
       });
@@ -101,6 +103,28 @@ export default function Home() {
     setOutputText("");
   };
 
+  const handleChangeLanguageFrom = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const languageCode = event.target.value;
+    const languageObject = languages.find(
+      (language) => language.code === languageCode
+    );
+    setTranslateFrom(languageObject || null);
+    setInputText("");
+  };
+
+  const handleChangeLanguageTo = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const languageCode = event.target.value;
+    const languageObject = languages.find(
+      (language) => language.code === languageCode
+    );
+    setTranslateTo(languageObject || null);
+    setOutputText("");
+  };
+
   return (
     <main className={`py-8 text-center text-white ${ibm_plex_sans.className}`}>
       <a
@@ -114,6 +138,17 @@ export default function Home() {
       <section className="flex flex-col center py-8 mx-auto w-[min(50rem,70%)]">
         <div className="py-8">
           <h3 className="text-2xl mb-8">From {translateFrom?.language}</h3>
+          <select
+            value={translateFrom?.code}
+            onChange={handleChangeLanguageFrom}
+            className="cursor-pointer py-4 px-6 mb-12 border-b border-[#5e5e5e] bg-[#262626]"
+          >
+            {languages.map((lang) => (
+              <option key={lang.code} value={lang.code}>
+                {lang.language}
+              </option>
+            ))}
+          </select>
           <textarea
             name="translateFrom"
             id="translateFrom"
@@ -141,6 +176,17 @@ export default function Home() {
 
         <div className="py-8">
           <h3 className="text-2xl mb-8">To {translateTo?.language}</h3>
+          <select
+            value={translateTo?.code}
+            onChange={handleChangeLanguageTo}
+            className="cursor-pointer py-4 px-6 mb-12 border-b border-[#5e5e5e] bg-[#262626]"
+          >
+            {languages.map((lang) => (
+              <option key={lang.code} value={lang.code}>
+                {lang.language}
+              </option>
+            ))}
+          </select>
           <textarea
             name="translateFrom"
             id="translateFrom"

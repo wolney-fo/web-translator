@@ -1,15 +1,17 @@
-# Web Translator
+# Web Translator - Babel Tower Project
 
 A web translator app using MS Azure AI services.
 
 ## Next features
 - [x] Output with text to speech
 - [ ] Input with speech to text
-- [ ] Language selector
+- [x] Language selector
 - [x] Language swap
 
 ## Screenshots
 ![screenshot](doc/screenshot.gif)
+
+🔗 Preview: [https://youtu.be/SkQTnYTwwqI](https://youtu.be/SkQTnYTwwqI)
 
 > 🎨 UI inspired on IBM.
 

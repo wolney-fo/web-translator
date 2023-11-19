@@ -1,25 +1,16 @@
 import { useEffect, useState } from "react";
 
-import {
-  AZURE_AI_TRANSLATOR_API_ENDPOINT,
-  AZURE_AI_TRANSLATOR_API_KEY,
-  AZURE_TEXT_TO_SPEECH_API_KEY,
-  AZURE_TEXT_TO_SPEECH_API_SYNTHESIS_VOICE_NAME,
-  AZURE_RESOURCES_API_REGION,
-} from "@/config/config";
-import axios from "axios";
-const { v4: uuidv4 } = require("uuid");
-import * as sdk from "microsoft-cognitiveservices-speech-sdk";
-
 import { ibm_plex_sans } from "@/fonts";
 import { AiFillSound } from "react-icons/ai";
 import { HiOutlineSwitchVertical } from "react-icons/hi";
 import { Language } from "@/config/interfaces";
+import { translateText } from "./api/azureAiTranslator";
+import { textToSpeech } from "./api/azureTextToSpeech";
 
 export default function Home() {
   const [languages, setLanguages] = useState<Language[]>([]);
-  const [translateFrom, setTranslateFrom] = useState<Language | null>(null);
-  const [translateTo, setTranslateTo] = useState<Language | null>(null);
+  const [translateFrom, setTranslateFrom] = useState<Language>();
+  const [translateTo, setTranslateTo] = useState<Language>();
   const [inputText, setInputText] = useState<string>("");
   const [outputText, setOutputText] = useState<string>("");
 
@@ -33,66 +24,33 @@ export default function Home() {
       });
   }, []);
 
-  const translateText = async () => {
-    setOutputText("Translating...");
-    axios({
-      baseURL: AZURE_AI_TRANSLATOR_API_ENDPOINT,
-      url: "/translate",
-      method: "post",
-      headers: {
-        "Ocp-Apim-Subscription-Key": AZURE_AI_TRANSLATOR_API_KEY,
-        "Ocp-Apim-Subscription-Region": AZURE_RESOURCES_API_REGION,
-        "Content-Type": "application/json",
-        "X-ClientTraceId": uuidv4().toString(),
-      },
-      params: {
-        "api-version": "3.0",
-        from: translateFrom?.code.substring(0, 2),
-        to: [translateTo?.code.substring(0, 2)],
-      },
-      data: [
-        {
-          text: inputText,
-        },
-      ],
-      responseType: "json",
-    })
-      .then(function (response) {
-        const translated = response.data[0].translations[0].text;
-        setOutputText(translated);
-      })
-      .catch(function (error) {
-        console.error(error);
-        alert("Erro na chamada da API");
-      });
+  const handleTranslateText = async () => {
+    try {
+      setOutputText("Translating...");
+
+      if (translateFrom && translateTo) {
+        const translatedText = await translateText(
+          inputText,
+          translateFrom?.code,
+          translateTo?.code
+        );
+
+        console.log(translateText);
+
+        setOutputText(String(translatedText));
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const playTranslation = () => {
-    if (outputText) {
-      const speechConfig = sdk.SpeechConfig.fromSubscription(
-        AZURE_TEXT_TO_SPEECH_API_KEY || "",
-        AZURE_RESOURCES_API_REGION || ""
-      );
-      const speechSynthesizer = new sdk.SpeechSynthesizer(
-        speechConfig,
-        undefined
-      );
-
-      const ssml = `<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xml:lang="en-US"><voice name="${AZURE_TEXT_TO_SPEECH_API_SYNTHESIS_VOICE_NAME}"><lang xml:lang="${translateTo?.code}">${outputText}</lang></voice></speak>`;
-      speechSynthesizer.speakSsmlAsync(
-        ssml,
-        (result) => {
-          if (result.errorDetails) {
-            console.error(result.errorDetails);
-          }
-
-          speechSynthesizer.close();
-        },
-        (error) => {
-          console.log(error);
-          speechSynthesizer.close();
-        }
-      );
+  const handlePlayTranslation = () => {
+    try {
+      if (outputText && translateTo) {
+        textToSpeech(outputText, translateTo.code);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -110,7 +68,7 @@ export default function Home() {
     const languageObject = languages.find(
       (language) => language.code === languageCode
     );
-    setTranslateFrom(languageObject || null);
+    setTranslateFrom(languageObject);
     setInputText("");
   };
 
@@ -121,7 +79,7 @@ export default function Home() {
     const languageObject = languages.find(
       (language) => language.code === languageCode
     );
-    setTranslateTo(languageObject || null);
+    setTranslateTo(languageObject);
     setOutputText("");
   };
 
@@ -162,7 +120,7 @@ export default function Home() {
 
         <button
           className="mx-auto py-2 w-full max-w-[24rem] bg-[#0f62fe] hover:bg-[#0353e9]"
-          onClick={translateText}
+          onClick={handleTranslateText}
         >
           Translate
         </button>
@@ -200,7 +158,7 @@ export default function Home() {
 
         <button
           className="text-center mx-auto py-2 px-4 bg-[#0f62fe] hover:bg-[#0353e9]"
-          onClick={playTranslation}
+          onClick={handlePlayTranslation}
         >
           <AiFillSound />
         </button>

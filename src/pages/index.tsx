@@ -95,18 +95,20 @@ export default function Home() {
 
       <section className="flex flex-col center py-8 mx-auto w-[min(50rem,70%)]">
         <div className="py-8">
-          <h3 className="text-2xl mb-8">From {translateFrom?.language}</h3>
-          <select
-            value={translateFrom?.code}
-            onChange={handleChangeLanguageFrom}
-            className="cursor-pointer py-4 px-6 mb-12 border-b border-[#5e5e5e] bg-[#262626]"
-          >
-            {languages.map((lang) => (
-              <option key={lang.code} value={lang.code}>
-                {lang.language}
-              </option>
-            ))}
-          </select>
+          <div className="flex mb-12 items-center justify-center gap-2">
+            <h3 className="text-2xl">From</h3>
+            <select
+              value={translateFrom?.code}
+              onChange={handleChangeLanguageFrom}
+              className="cursor-pointer py-4 px-6 border-b border-[#5e5e5e] bg-[#262626]"
+            >
+              {languages.map((lang) => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.language}
+                </option>
+              ))}
+            </select>
+          </div>
           <textarea
             name="translateFrom"
             id="translateFrom"
@@ -133,18 +135,20 @@ export default function Home() {
         </button>
 
         <div className="py-8">
-          <h3 className="text-2xl mb-8">To {translateTo?.language}</h3>
-          <select
-            value={translateTo?.code}
-            onChange={handleChangeLanguageTo}
-            className="cursor-pointer py-4 px-6 mb-12 border-b border-[#5e5e5e] bg-[#262626]"
-          >
-            {languages.map((lang) => (
-              <option key={lang.code} value={lang.code}>
-                {lang.language}
-              </option>
-            ))}
-          </select>
+          <div className="mb-12 flex items-center justify-center gap-2">
+            <h3 className="text-2xl">To</h3>
+            <select
+              value={translateTo?.code}
+              onChange={handleChangeLanguageTo}
+              className="cursor-pointer py-4 px-6 border-b border-[#5e5e5e] bg-[#262626]"
+            >
+              {languages.map((lang) => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.language}
+                </option>
+              ))}
+            </select>
+          </div>
           <textarea
             name="translateFrom"
             id="translateFrom"
